@@ -13,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres：12
+        image: postgres:12
         env:
           POSTGRES_USER: zplus
           POSTGRES_PASSWORD: 123456
