@@ -7,6 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
+  
   test:
     name: Test
     runs-on: ubuntu-latest
@@ -18,7 +19,6 @@ jobs:
           POSTGRES_USER: zplus
           POSTGRES_PASSWORD: 123456
           POSTGRES_DB: simple_bank
-        # Set health checks to wait until postgres has started
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
