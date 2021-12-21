@@ -50,6 +50,7 @@ jobs:
     - name: Go mod Init
       run: |
         go mod tidy
+        cat go.mod
 
     - name: Test
       run: make test
