@@ -11,12 +11,33 @@ jobs:
   build:
     name: Test
     runs-on: ubuntu-latest
+
+    # 指定外部服务列表
+    services:
+      postgres:
+        image: postgres：12
+        # Provide the password for postgres
+        env:
+          POSTGRES_USER: zplus
+          POSTGRES_PASSWORD: 123456
+          POSTGRES_DB: simple_bank
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.17
       id: go
+    
+    -name: run migrationup
+      run: make migrateup
 
     - name: check out 
       uses: actions/checkout@v2
