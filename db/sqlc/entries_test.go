@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-15 00:03:04
- * @LastEditTime: 2021-12-15 00:34:55
+ * @LastEditTime: 2021-12-21 23:00:25
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /goproject/src/go_code/bank_project/db/sqlc/entries_test.go
@@ -27,7 +27,7 @@ func TestCreateEntry(t *testing.T) {
 
 func TestListEntriesById(t *testing.T) {
 	listArgs := ListEntriesByIdParams{
-		AccountID: 3,
+		AccountID: 1,
 		Limit:     10,
 		Offset:    0,
 	}

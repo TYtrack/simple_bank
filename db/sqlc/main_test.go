@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-14 18:21:53
- * @LastEditTime: 2021-12-15 14:00:00
+ * @LastEditTime: 2021-12-21 22:59:27
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /goproject/src/go_code/银行项目/db/sqlc/main_tets.go
@@ -27,6 +27,7 @@ const (
 )
 
 func TestMain(m *testing.M) {
+	fmt.Println("TestMain")
 	var err error
 	testDB, err = sql.Open(dbDriver, dbSource)
 	if err != nil {
