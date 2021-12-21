@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-15 12:41:45
- * @LastEditTime: 2021-12-21 16:10:24
+ * @LastEditTime: 2021-12-21 20:43:28
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /goproject/src/go_code/bank_project/db/sqlc/store.go
@@ -107,9 +107,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			if err != nil {
 				return err
 			}
-
 		}
-
 		return nil
 	})
 	return result, err
