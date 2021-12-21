@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-14 18:19:58
- * @LastEditTime: 2021-12-15 00:27:30
+ * @LastEditTime: 2021-12-21 22:14:41
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /goproject/src/go_code/银行项目/db/sqlc/account_test.go
@@ -12,8 +12,8 @@ package db
 import (
 	"context"
 	"fmt"
-	"go_code/bank_project/util"
 	"testing"
+	"util"
 
 	"github.com/stretchr/testify/require"
 )
