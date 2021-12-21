@@ -43,8 +43,12 @@ jobs:
         sudo mv migrate /usr/bin
         which migrate
 
+      
     - name: run migrationup
       run: make migrateup
-
+    
+    - name: Go mod Init
+      run: go mod init
+      
     - name: Test
       run: make test
