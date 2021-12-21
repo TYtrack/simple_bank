@@ -48,7 +48,7 @@ jobs:
       run: make migrateup
     
     - name: Go mod Init
-      run: go mod init
-      
+      run: go mod init example.com/m/v2
+
     - name: Test
       run: make test
