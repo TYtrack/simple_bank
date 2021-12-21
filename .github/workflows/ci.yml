@@ -49,7 +49,6 @@ jobs:
     
     - name: Go mod Init
       run: |
-        go mod init example.com/m/v2
         go mod tidy
 
     - name: Test
