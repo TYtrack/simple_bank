@@ -7,8 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  
-  test:
+  container-job:
     name: Test
     runs-on: ubuntu-latest
 
