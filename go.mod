@@ -1,4 +1,4 @@
-module go_code/bank_project
+module bank_project
 
 go 1.17
 
