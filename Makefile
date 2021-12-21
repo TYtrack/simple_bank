@@ -30,7 +30,7 @@ sqlc:
 	sqlc generate
 	
 test :
-	go test -v -cover ./db/sqlc/
+	go test -v -cover ./db/sqlc/account_test.go ./db/sqlc/account.sql.go ./db/sqlc/main_test.go ./db/sqlc/db.go ./db/sqlc/models.go
 
 .PHONY:
 	mypostgres createdb dropdb
