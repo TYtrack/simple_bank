@@ -1,15 +1,16 @@
 /*
  * @Author: your name
  * @Date: 2021-12-14 18:51:19
- * @LastEditTime: 2021-12-14 19:04:49
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-29 13:39:17
+ * @LastEditors: TYtrack
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /goproject/src/go_code/银行项目/util/Random.go
+ * @FilePath: /bank_project/util/myRandom.go
  */
 
 package util
 
 import (
+	"fmt"
 	"math/rand"
 	"strings"
 	"time"
@@ -32,6 +33,11 @@ func RandomString(n int) string {
 
 	}
 	return builder.String()
+}
+
+func RandomEmail() string {
+
+	return fmt.Sprintf("%v@email.com", RandomString(6))
 }
 
 func RandomOwner() string {
