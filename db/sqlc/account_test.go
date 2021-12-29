@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2021-12-14 18:19:58
- * @LastEditTime: 2021-12-22 01:20:07
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-29 16:13:30
+ * @LastEditors: TYtrack
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /goproject/src/go_code/银行项目/db/sqlc/account_test.go
+ * @FilePath: /bank_project/db/sqlc/account_test.go
  */
 
 package db
@@ -19,49 +19,64 @@ import (
 )
 
 func TestAccountCreate(t *testing.T) {
-	fmt.Println("TestAccountCreate")
+	createRandomAccount(t)
+}
+
+func createRandomUser(t *testing.T) User {
+	userParams := CreateUserParams{
+		Username:     util.RandomString(6),
+		HashPassword: "secret",
+		FullName:     util.RandomString(10),
+		Email:        util.RandomEmail(),
+	}
+	user1, err := testQueries.CreateUser(context.Background(), userParams)
+	require.NoError(t, err)
+	require.Equal(t, user1.FullName, userParams.FullName)
+	require.Equal(t, user1.Email, userParams.Email)
+	require.Equal(t, user1.HashPassword, userParams.HashPassword)
+	require.Equal(t, user1.Username, userParams.Username)
+
+	require.NotZero(t, user1.CreatedAt)
+	require.True(t, user1.PasswordChangedAt.IsZero())
+	return user1
+
+}
+
+func createRandomAccount(t *testing.T) Account {
+	user1 := createRandomUser(t)
 	accountParams := CreateAccountParams{
-		Owner:    util.RandomOwner(),
-		Balance:  util.RandomBalance(),
+		Owner:    user1.Username,
+		Balance:  10000,
 		Currency: util.RandomCurrency(),
 	}
 	account, err := testQueries.CreateAccount(context.Background(), accountParams)
 	if err != nil {
 		fmt.Println(err)
 	}
-	//断言
-	require.NoError(t, err)
-	require.NotEmpty(t, account)
-
-	require.Equal(t, accountParams.Owner, account.Owner)
-	require.Equal(t, accountParams.Balance, account.Balance)
-	require.Equal(t, accountParams.Currency, account.Currency)
-
-	require.NotZero(t, account.ID)
-	require.NotZero(t, account.CreatedAt)
+	return account
 
 }
 
 func TestUpdateAccount(t *testing.T) {
+	account := createRandomAccount(t)
 	fmt.Println("TestUpdateAccount")
 	updateAccountParams := UpdateAccountParams{
 		Balance: 899,
-		ID:      1,
+		ID:      account.ID,
 	}
 	err := testQueries.UpdateAccount(context.Background(), updateAccountParams)
 	require.NoError(t, err)
 }
 
 func TestUpdate2Account(t *testing.T) {
+	account := createRandomAccount(t)
 	fmt.Println("TestUpdate2Account")
 	updateAccoun2tParams := UpdateAccount2Params{
 		Balance: 444,
-		ID:      1,
+		ID:      account.ID,
 	}
 	account, err := testQueries.UpdateAccount2(context.Background(), updateAccoun2tParams)
 	require.NoError(t, err)
-	ss := fmt.Sprintf("zzz%v", account)
-	t.Logf(ss)
 }
 
 func TestListAccounts(t *testing.T) {
@@ -78,7 +93,8 @@ func TestListAccounts(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
+	account := createRandomAccount(t)
 	fmt.Println("TestDeleteAccount")
-	err := testQueries.DeleteAccount(context.Background(), 1)
+	err := testQueries.DeleteAccount(context.Background(), account.ID)
 	require.NoError(t, err)
 }

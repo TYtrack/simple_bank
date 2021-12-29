@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-14 18:21:53
- * @LastEditTime: 2021-12-21 22:59:27
+ * @LastEditTime: 2021-12-22 16:23:48
  * @LastEditors: Please set LastEditors
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /goproject/src/go_code/银行项目/db/sqlc/main_tets.go
@@ -10,8 +10,10 @@
 package db
 
 import (
+	"bank_project/util"
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 	"testing"
 
@@ -21,15 +23,13 @@ import (
 var testQueries *Queries
 var testDB *sql.DB
 
-const (
-	dbDriver = "postgres"
-	dbSource = "postgresql://zplus:123456@localhost:5432/simple_bank?sslmode=disable"
-)
-
 func TestMain(m *testing.M) {
-	fmt.Println("TestMain")
-	var err error
-	testDB, err = sql.Open(dbDriver, dbSource)
+	config, err := util.LoadConfig("../..")
+	if err != nil {
+		log.Fatalln("Error: config file cannot load", err)
+	}
+
+	testDB, err = sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2021-12-15 12:41:45
- * @LastEditTime: 2021-12-21 20:43:28
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-29 16:02:06
+ * @LastEditors: TYtrack
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /goproject/src/go_code/bank_project/db/sqlc/store.go
+ * @FilePath: /bank_project/db/sqlc/store.go
  */
 
 package db
@@ -15,21 +15,26 @@ import (
 	"fmt"
 )
 
-type Store struct {
+type Store interface {
+	TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error)
+	Querier
+}
+
+type SQLStore struct {
 	*Queries
 	db *sql.DB
 }
 
 var txKey = struct{}{}
 
-func NewStore(db *sql.DB) *Store {
-	return &Store{
+func NewStore(db *sql.DB) Store {
+	return &SQLStore{
 		db:      db,
 		Queries: New(db),
 	}
 }
 
-func (store *Store) exeTx(ct context.Context, fnq func(*Queries) error) (err error) {
+func (store *SQLStore) exeTx(ct context.Context, fnq func(*Queries) error) (err error) {
 	tx, err := store.db.Begin()
 	if err != nil {
 		return err
@@ -61,7 +66,7 @@ type TransferTxResult struct {
 	To_entry     Entry    `json:"to_entry"`
 }
 
-func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
+func (store *SQLStore) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
 
 	err := store.exeTx(ctx, func(q *Queries) error {
@@ -84,7 +89,7 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 			return err
 		}
 
-		result.From_entry, err = q.CreateEntry(ctx, CreateEntryParams{
+		result.To_entry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: arg.To_account_id,
 			Amount:    arg.Amount,
 		})

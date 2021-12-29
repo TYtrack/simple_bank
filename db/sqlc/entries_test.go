@@ -1,50 +1,65 @@
 /*
  * @Author: your name
  * @Date: 2021-12-15 00:03:04
- * @LastEditTime: 2021-12-21 23:00:25
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2021-12-29 14:04:55
+ * @LastEditors: TYtrack
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: /goproject/src/go_code/bank_project/db/sqlc/entries_test.go
+ * @FilePath: /bank_project/db/sqlc/entries_test.go
  */
 
 package db
 
 import (
+	"bank_project/util"
 	"context"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/require"
 )
 
 func TestCreateEntry(t *testing.T) {
+	createRandomEntry(t)
+}
+
+func createRandomEntry(t *testing.T) (Account, Entry) {
+	account := createRandomAccount(t)
 	listArgs := CreateEntryParams{
-		AccountID: 1,
-		Amount:    43,
+		AccountID: account.ID,
+		Amount:    util.RandomInt64(10, 100),
 	}
-	_, err := testQueries.CreateEntry(context.Background(), listArgs)
+	entry, err := testQueries.CreateEntry(context.Background(), listArgs)
 	require.NoError(t, err)
+	return account, entry
+
 }
 
 func TestListEntriesById(t *testing.T) {
+	account, _ := createRandomEntry(t)
+
 	listArgs := ListEntriesByIdParams{
-		AccountID: 1,
+		AccountID: account.ID,
 		Limit:     10,
 		Offset:    0,
 	}
-	zz, err := testQueries.ListEntriesById(context.Background(), listArgs)
+	_, err := testQueries.ListEntriesById(context.Background(), listArgs)
 	require.NoError(t, err)
-	t.Errorf("zzz: %v", zz)
 }
 
 func TestGetEntry(t *testing.T) {
-
-	zz, err := testQueries.GetEntry(context.Background(), 3)
+	_, entry1 := createRandomEntry(t)
+	entry2, err := testQueries.GetEntry(context.Background(), entry1.ID)
 	require.NoError(t, err)
-	t.Errorf("zzz: %v", zz)
+	require.Equal(t, entry1.AccountID, entry2.AccountID)
+	require.Equal(t, entry1.Amount, entry2.Amount)
+	require.Equal(t, entry1.ID, entry2.ID)
+
+	require.WithinDuration(t, entry1.CreatedAt.Time, entry2.CreatedAt.Time, time.Second)
+
 }
 
 func TestDeleteEntry(t *testing.T) {
-
-	err := testQueries.DeleteEntry(context.Background(), 3)
+	_, entry := createRandomEntry(t)
+	err := testQueries.DeleteEntry(context.Background(), entry.ID)
 	require.NoError(t, err)
 }
