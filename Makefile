@@ -16,21 +16,32 @@ rmpostgres:
 createdb:
 	docker exec -it mypostgres createdb --username=zplus --owner=zplus simple_bank
 
-
 dropdb:
 	docker exec -it mypostgres dropdb --username=zplus simple_bank
 
 migrateup:
 	migrate -path db/migration -database "postgresql://zplus:123456@localhost:5432/simple_bank?sslmode=disable" -verbose up
 
+migrateup1:
+	migrate -path db/migration -database "postgresql://zplus:123456@localhost:5432/simple_bank?sslmode=disable" -verbose up 1
+
 migratedown:
 	migrate -path db/migration -database "postgresql://zplus:123456@localhost:5432/simple_bank?sslmode=disable" -verbose down
+
+migratedown1:
+	migrate -path db/migration -database "postgresql://zplus:123456@localhost:5432/simple_bank?sslmode=disable" -verbose down 1
 	
 sqlc:
 	sqlc generate
 	
 test :
-	go test -v -cover ./db/sqlc/account_test.go ./db/sqlc/account.sql.go ./db/sqlc/main_test.go ./db/sqlc/db.go ./db/sqlc/models.go
+	go test -v -cover ./...
+
+server :
+	go run main.go
+
+mock :
+	mockgen -package mockdb -destination db/mock/store.go bank_project/db/sqlc Store
 
 .PHONY:
 	mypostgres createdb dropdb
