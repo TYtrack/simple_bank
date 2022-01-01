@@ -3,7 +3,7 @@
  * @Description: ...
  * @Date: 2021-12-29 13:37:11
  * @LastEditors: TYtrack
- * @LastEditTime: 2021-12-29 16:13:32
+ * @LastEditTime: 2021-12-29 20:22:58
  * @FilePath: /bank_project/db/sqlc/user_test.go
  */
 

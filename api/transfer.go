@@ -3,14 +3,16 @@
  * @Description: ...
  * @Date: 2021-12-28 14:34:10
  * @LastEditors: TYtrack
- * @LastEditTime: 2021-12-28 16:21:01
+ * @LastEditTime: 2022-01-01 20:42:27
  * @FilePath: /bank_project/api/transfer.go
  */
 package api
 
 import (
 	db "bank_project/db/sqlc"
+	"bank_project/token"
 	"database/sql"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -32,12 +34,25 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
-
-	if !server.validTransfer(ctx, req.FromAccountID, req.Currency) {
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
+	if !valid {
+		return
+	}
+	//从中间件获取值
+	authPayload, ok := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
+	if !ok {
+		err := errors.New("cannot convert the authPayload")
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	if fromAccount.Owner != authPayload.Username {
+		err := errors.New("from account doesn't belong the authricated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 
-	if !server.validTransfer(ctx, req.ToAccountID, req.Currency) {
+	_, valid = server.validAccount(ctx, req.ToAccountID, req.Currency)
+	if !valid {
 		return
 	}
 
@@ -55,22 +70,22 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-func (server *Server) validTransfer(ctx *gin.Context, accountID int64, currency string) bool {
+func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
 	account, err := server.store.GetAccountForUpdate(ctx, accountID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			ctx.JSON(http.StatusNotFound, errorResponse(err))
-			return false
+			return account, false
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return false
+		return account, false
 	}
 
 	if account.Currency != currency {
 		err := fmt.Errorf("account %v didn't match the currency[%v]", accountID, currency)
 		ctx.JSON(http.StatusBadGateway, errorResponse(err))
-		return false
+		return account, false
 	}
 
-	return true
+	return account, true
 }
