@@ -43,5 +43,16 @@ server :
 mock :
 	mockgen -package mockdb -destination db/mock/store.go bank_project/db/sqlc Store
 
+dockerbuild :
+	docker build -t simplebank:latest .
+
+dockerrun :
+	docker run --name bank --network bank-network -e GIN_MODE=release -e DB_SOURCE="postgresql://zplus:123456@mypostgres:5432/simple_bank?sslmode=disable" --rm -p 9999:9999 simplebank
+
+dockernetwork:
+	docker network create bank-network
+	docker network connect bank-network mypostgres
+
+
 .PHONY:
 	mypostgres createdb dropdb

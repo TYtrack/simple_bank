@@ -3,7 +3,7 @@
  * @Description: ...
  * @Date: 2021-12-29 17:03:26
  * @LastEditors: TYtrack
- * @LastEditTime: 2021-12-29 22:42:51
+ * @LastEditTime: 2022-01-01 16:03:09
  * @FilePath: /bank_project/api/user_test.go
  */
 
@@ -106,7 +106,7 @@ func TestCreateUserApi(t *testing.T) {
 
 			tc.buildStubs(store)
 
-			server := NewServer(store)
+			server := newTestServer(t, store)
 			//使用httptest来记录http请求的响应
 			recoder := httptest.NewRecorder()
 			url := "/user"

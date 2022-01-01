@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-12-14 18:19:58
- * @LastEditTime: 2021-12-29 16:13:30
+ * @LastEditTime: 2022-01-01 20:35:01
  * @LastEditors: TYtrack
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: /bank_project/db/sqlc/account_test.go
@@ -23,9 +23,11 @@ func TestAccountCreate(t *testing.T) {
 }
 
 func createRandomUser(t *testing.T) User {
+	password := util.RandomString(6)
+	hashPwd, _ := util.HashPassword(password)
 	userParams := CreateUserParams{
 		Username:     util.RandomString(6),
-		HashPassword: "secret",
+		HashPassword: hashPwd,
 		FullName:     util.RandomString(10),
 		Email:        util.RandomEmail(),
 	}
@@ -80,15 +82,20 @@ func TestUpdate2Account(t *testing.T) {
 }
 
 func TestListAccounts(t *testing.T) {
-
+	var lastAccount Account
+	for i := 0; i < 10; i++ {
+		lastAccount = createRandomAccount(t)
+	}
 	fmt.Println("TestListAccounts")
 
 	listAccountsParams := ListAccountsParams{
+		Owner:  lastAccount.Owner,
 		Limit:  5,
-		Offset: 1,
+		Offset: 0,
 	}
-	_, err := testQueries.ListAccounts(context.Background(), listAccountsParams)
+	accounts, err := testQueries.ListAccounts(context.Background(), listAccountsParams)
 	require.NoError(t, err)
+	require.NotEmpty(t, accounts)
 
 }
 
