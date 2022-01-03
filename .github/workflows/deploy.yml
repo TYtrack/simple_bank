@@ -1,8 +1,8 @@
-name: Deploy to ECR 
+name: Deploy to ECR2
 
 on:
   push:
-    branches: [main,ft.ci]
+    branches: [main,ft/ci]
 
 
 jobs:
