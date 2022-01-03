@@ -1,4 +1,4 @@
-name: Run unit test
+name: Deploy to ECR 
 
 on:
   push:
