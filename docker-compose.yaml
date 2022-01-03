@@ -1,0 +1,22 @@
+version: '3.9'
+
+services:
+  postgres:
+    environment:
+      - POSTGRES_USER=zplus
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=simple_bank
+    image: postgres:14.1-alpine
+    
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "9999:9999"
+    environment:
+      - DB_SOURCE=postgresql://zplus:123456@postgres:5432/simple_bank?sslmode=disable
+    depends_on:
+      - postgres
+    entrypoint: ["/app/wait-for.sh","postgres:5432","--","/app/start.sh"]
+    command: ["/app/main"]

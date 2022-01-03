@@ -1,8 +1,8 @@
-name: ci-test
+name: Run unit test
 
 on:
   push:
-    branches: [ main ,ft/docker]
+    branches: [ main]
   pull_request:
     branches: [ main ]
 
