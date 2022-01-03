@@ -1,4 +1,4 @@
-name: Deploy to ECR2
+name: Deploy to ECR 3
 
 on:
   push:
